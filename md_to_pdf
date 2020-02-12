@@ -1,0 +1,16 @@
+#!/bin/sh
+sf="${1%.*}"
+sf_html="md_export_html/$sf.html"
+sf_pdf="md_export_pdf/$sf.pdf"
+
+mkdir -p md_export_html md_export_pdf
+
+common_options='-q -B 25mm -T 25mm --footer-right "[page] | [topage]" --footer-font-name "Lato, Calibri, Roboto, Helvetica, Helvetica Neue, Arial, sans-serif" --footer-font-size 10 --footer-spacing 5 "$sf_html" "$sf_pdf"'
+
+if [ -n "$2" ]; then
+  pandoc "$1" -thtml --standalone --mathjax > "$sf_html"
+  wkhtmltopdf --javascript-delay $2 $common_options
+else
+  pandoc "$1" -thtml --standalone > "$sf_html"
+  wkhtmltopdf $common_options
+fi
